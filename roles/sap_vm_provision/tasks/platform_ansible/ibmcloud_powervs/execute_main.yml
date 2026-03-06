@@ -211,7 +211,7 @@
           | select | list }}"
       loop_control:
         loop_var: placement_item
-      register: __sap_vm_provision_register_ibmcloud_placement_group
+      register: __sap_vm_provision_register_placement_group
       no_log: "{{ __sap_vm_provision_no_log }}"
       run_once: true
       when:

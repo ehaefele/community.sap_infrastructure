@@ -83,22 +83,18 @@
   no_log: "{{ __sap_vm_provision_no_log }}"
   vars:
     __placement_group: "{{ (
-      (__sap_vm_provision_register_ibmcloud_placement_groups_list.resource.placement_groups | selectattr('name','search','hana'))[0].id
+      (__sap_vm_provision_register_placement_group.results | selectattr('item','==','hana'))[0].name
       if (sap_vm_provision_group_hana_primary in __sap_vm_provision_host_dict_spec.sap_host_type
         or sap_vm_provision_group_hana_secondary in __sap_vm_provision_host_dict_spec.sap_host_type)
-        and not __sap_vm_provision_register_ibmcloud_placement_groups_list.skipped | d(false)
       else
-      (__sap_vm_provision_register_ibmcloud_placement_groups_list.resource.placement_groups | selectattr('name','search','anydb'))[0].id
+      (__sap_vm_provision_register_placement_group.results | selectattr('item','==','anydb'))[0].name
       if (sap_vm_provision_group_anydb_primary in __sap_vm_provision_host_dict_spec.sap_host_type
         or sap_vm_provision_group_anydb_secondary in __sap_vm_provision_host_dict_spec.sap_host_type)
-        and not __sap_vm_provision_register_ibmcloud_placement_groups_list.skipped | d(false)
       else
-      (__sap_vm_provision_register_ibmcloud_placement_groups_list.resource.placement_groups | selectattr('name','search','nwas'))[0].id
+      (__sap_vm_provision_register_placement_group.results | selectattr('item','==','nwas'))[0].name
       if (sap_vm_provision_group_nwas_ascs in __sap_vm_provision_host_dict_spec.sap_host_type
         or sap_vm_provision_group_nwas_ers in __sap_vm_provision_host_dict_spec.sap_host_type)
-        and not __sap_vm_provision_register_ibmcloud_placement_groups_list.skipped | d(false)
       ) | d(omit) }}"
-
 
 # Use check to avoid idempotency issues with legacy ibm.cloudcollection Ansible Collection
 # (until ibm.cloud Ansible Collection is out of beta)
