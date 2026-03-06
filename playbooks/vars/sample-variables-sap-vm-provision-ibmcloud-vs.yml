@@ -1,0 +1,69 @@
+---
+
+# This sample Ansible Playbook is not a full example,
+# which would pass additional variables onto other
+# Ansible Roles such as sap_storage_setup.
+# It is only to test the provisioning process
+# of a small Virtual Machine.
+
+####
+# Infrastructure Provisioning selection
+####
+
+sap_vm_provision_iac_type: "ansible"  # ansible , ansible_to_terraform , existing_hosts
+sap_vm_provision_iac_platform: "ibmcloud_vs"  # aws_ec2_vs , gcp_ce_vm , ibmcloud_vs , ibmcloud_powervs , msazure_vm , ibmpowervm_vm , kubevirt_vm , ovirt_vm , vmware_vm
+
+sap_vm_provision_host_specification_plan: "test_plan_8gb"
+sap_vm_provision_dns_root_domain: "poc.cloud"
+
+
+####
+# Infrastructure Provisioning selection
+# IBM Cloud virtual server
+#
+# Only for use when 'ibmcloud_vs' is value provided for variable sap_vm_provision_iac_platform
+####
+
+sap_vm_provision_ibmcloud_api_key: "ENTER_STRING_VALUE_HERE"
+sap_vm_provision_ibmcloud_region: "{{ sap_vm_provision_ibmcloud_availability_zone[:-2] }}"
+sap_vm_provision_ibmcloud_vpc_availability_zone: "eu-de-1"
+sap_vm_provision_ibmcloud_vpc_name: "ENTER_STRING_VALUE_HERE"
+sap_vm_provision_ibmcloud_vpc_subnet_name: "ENTER_STRING_VALUE_HERE"
+sap_vm_provision_ibmcloud_vs_host_os_image: "ENTER_STRING_VALUE_HERE"
+sap_vm_provision_bastion_user: "ENTER_STRING_VALUE_HERE"
+sap_vm_provision_bastion_ssh_port: "ENTER_STRING_VALUE_HERE"
+
+# Only for use when 'ansible' is value provided for variable sap_vm_provision_iac_type
+####
+sap_vm_provision_bastion_public_ip: "ENTER_STRING_VALUE_HERE"
+sap_vm_provision_ssh_bastion_private_key_file_path: "./bastion_rsa"
+sap_vm_provision_ssh_host_private_key_file_path: "./hosts_rsa"
+sap_vm_provision_ibmcloud_key_pair_name_ssh_host_public_key: "ENTER_STRING_VALUE_HERE"
+sap_vm_provision_ibmcloud_vpc_sg_names: "ENTER_STRING_VALUE_HERE"
+
+
+####
+# Infrastructure Definitions
+# IBM Cloud
+####
+
+sap_vm_provision_ibmcloud_vs_host_os_image_dictionary:
+  rhel-8-6:
+  rhel-8-6-sap-ha:
+  sles-15-4:
+  sles-15-4-sap-ha:
+
+sap_vm_provision_ibmcloud_vs_host_specifications_dictionary:
+  test_plan_8gb:
+    test-vsi: # Hostname, must be 13 characters or less
+      sap_host_type: hana_primary # hana_primary, hana_secondary, nwas_ascs, nwas_ers, nwas_pas, nwas_aas
+      virtual_machine_profile: bxf-2x8
+      disable_ip_anti_spoofing: true
+      storage_definition:
+        - name: hana_data
+          mountpoint: /hana/data
+          #disk_count: 1                 # default: 1, if more then then LVM logical volume will be striped across the defined disks
+          disk_size: 384                 # size in GB, integer
+          #disk_type: custom             # default: , profile custom, 5iops-tier, 10iops-tier, general-purpose, sdp
+          #disk_iops:                    # default: null, only with custom profile
+          filesystem_type: xfs           # default: xfs
