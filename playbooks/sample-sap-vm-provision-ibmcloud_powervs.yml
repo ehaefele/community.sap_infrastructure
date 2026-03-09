@@ -12,8 +12,8 @@
   pre_tasks:
 
     # Alternative to executing ansible-playbook with -e for Ansible Extravars file
-    - name: Include sample variables for IBM Cloud virtual servers
-      ansible.builtin.include_vars: ./vars/sample-variables-sap-vm-provision-ibmcloud_vs.yml
+    - name: Include sample variables for IBM Power Virtual servers
+          ansible.builtin.include_vars: ./vars/sample-variables-sap-vm-provision-ibmcloud_powervs.yml
 
 
 - name: Ansible Play to create dynamic inventory group for provisioning
@@ -28,7 +28,7 @@
       loop: "{{ sap_vm_provision_ibmcloud_vs_host_specifications_dictionary[sap_vm_provision_host_specification_plan].keys() }}"
 
 
-- name: Ansible Play to provision hosts for SAP on IBM Cloud
+- name: Ansible Play to provision hosts for SAP on Power Virtual Server
   hosts: sap_vm_provision_target_inventory_group # Ansible Play target hosts pattern, use Inventory Group created by previous Ansible Task (add_host)
   gather_facts: false
   tasks:

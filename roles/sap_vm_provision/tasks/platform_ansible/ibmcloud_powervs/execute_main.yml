@@ -260,7 +260,20 @@
       ansible.builtin.add_host:
         name: "{{ add_item[0].host_node }}"
         groups: "{{ add_item[0].sap_system_type + '_' if (add_item[0].sap_system_type != '') }}{{ add_item[0].sap_host_type }}"
-        ansible_host: "{{ add_item[0].resource.networks[0].ip }}"
+        ansible_host: >-
+          {{
+            (
+              (add_item[0].resource | default({})).pi_network
+              | default([])
+              | map(attribute='ip_address')
+              | first
+            )
+            | default(
+              (add_item[0].resource.networks | default([])
+               | map(attribute='ip')
+               | first)
+            )
+          }}
         ansible_user: "root"
         ansible_ssh_private_key_file: "{{ sap_vm_provision_ssh_host_private_key_file_path }}"
         ansible_ssh_common_args: "{{ sap_vm_provision_ssh_host_ssh_args }} {{ __sap_vm_provision_fact_ssh_args_bastion | d('') }}"
